@@ -20,12 +20,21 @@ from linebot.v3.messaging import (
 from linebot.v3.messaging import MessagingApi, MessagingApiBlob, RichMenuRequest, RichMenuArea, RichMenuSize, RichMenuBounds, PostbackAction
 from linebot.v3.webhooks import MessageEvent, TextMessageContent, PostbackEvent
 
-"""gen-lang-client-0700041250-50b828903f03.json"""
+from google.cloud import secretmanager
 
 """##設置今日為2024-09-01"""
 
-
 today = datetime(2024, 9, 1)
+
+def access_secret_version(project_id, secret_id, version_id="latest"):
+    client = secretmanager.SecretManagerServiceClient()
+    name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+    response = client.access_secret_version(request={"name": name})
+    secret_string = response.payload.data.decode("UTF-8")
+    return secret_string
+
+# 你 GCP 專案 ID
+PROJECT_ID = "gen-lang-client-0700041250"
 
 #上週
 def get_last_week_range(today):
@@ -91,7 +100,7 @@ def merged_df():
 """#Search Agent 20250811版"""
 
 # GPT API 設定
-GPT_API_KEY = "sk-tGDJdkhp45o5rnAmC021091179F1444d958d035a5dA8DfF5"
+GPT_API_KEY = access_secret_version(PROJECT_ID, "GPT_API_KEY")
 GPT_ENDPOINT = "https://free.v36.cm/v1/chat/completions"
 
 GPT_headers = {
@@ -1152,9 +1161,9 @@ def search_inventory(event, data_dict):
 """#LineBot + SearchAgent + FlexMessage"""
 
 
-#LINE Channel Setting (LINE Developers)
-access_token = '6Ety0+qdlm9GdM/VlFX5K+lnQu5IMYBWeRba2FUpmzB0TwQIfoNYA6tn/m2dnyNR/1sIiO8ek4gmrJXm4J5P6Th3Fhpz6cdAtHQwdhsk/ibMiApjxanoKghogEmdwTo7sl6fjm3FRYkJAxKpL1PKqgdB04t89/1O/w1cDnyilFU='
-secret = 'b4d6920e3dcfd210051f1b413fdf894c'
+# 從 Secret Manager 取得密鑰
+access_token = access_secret_version(PROJECT_ID, "LINE_CHANNEL_ACCESS_TOKEN")
+secret = access_secret_version(PROJECT_ID, "LINE_CHANNEL_SECRET")
 
 #20250804_test
 # 初始化 Flask
