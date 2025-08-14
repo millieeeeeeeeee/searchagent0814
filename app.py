@@ -62,7 +62,7 @@ def get_last_month_range(today):
 """#資料處理"""
 
 #Googlesheet Api
-gc = pygsheets.authorize(service_account_file=SERVICE_ACCOUNT_JSON)
+gc = pygsheets.authorize(custom_credentials=SERVICE_ACCOUNT_JSON)
 
 survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
@@ -82,7 +82,7 @@ merged['日期'] = pd.to_datetime(merged['日期'], format='mixed')
 
 #合併三張表資料
 def merged_df():
-  gc = pygsheets.authorize(service_account_file = SERVICE_ACCOUNT_JSON)
+  gc = pygsheets.authorize(custom_credentials = SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
@@ -222,7 +222,7 @@ def chunk_stock(parsed_dict,df):
 
 def PhaseII_DataSelector(parsed_dict):
   required_tables = parsed_dict.get("required_tables", [])
-  gc = pygsheets.authorize(service_account_file = SERVICE_ACCOUNT_JSON)
+  gc = pygsheets.authorize(custom_credentials = SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
