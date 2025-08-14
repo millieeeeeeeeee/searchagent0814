@@ -39,7 +39,13 @@ PROJECT_ID = "gen-lang-client-0700041250"
 SERVICE_ACCOUNT_JSON_str = access_secret_version(PROJECT_ID, "SERVICE_ACCOUNT_JSON")
 SERVICE_ACCOUNT_JSON_dict = json.loads(SERVICE_ACCOUNT_JSON_str)
 # 直接建立憑證物件
-SERVICE_ACCOUNT_JSON = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_JSON_dict)
+SERVICE_ACCOUNT_JSON = service_account.Credentials.from_service_account_info(
+    SERVICE_ACCOUNT_JSON_dict,
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+)
 
 #上週
 def get_last_week_range(today):
@@ -62,7 +68,7 @@ def get_last_month_range(today):
 """#資料處理"""
 
 #Googlesheet Api
-gc = pygsheets.authorize(custom_credentials=SERVICE_ACCOUNT_JSON)
+gc = pygsheets.authorize(credentials=SERVICE_ACCOUNT_JSON)
 
 survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
@@ -82,7 +88,7 @@ merged['日期'] = pd.to_datetime(merged['日期'], format='mixed')
 
 #合併三張表資料
 def merged_df():
-  gc = pygsheets.authorize(custom_credentials = SERVICE_ACCOUNT_JSON)
+  gc = pygsheets.authorize(credentials=SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
@@ -222,7 +228,7 @@ def chunk_stock(parsed_dict,df):
 
 def PhaseII_DataSelector(parsed_dict):
   required_tables = parsed_dict.get("required_tables", [])
-  gc = pygsheets.authorize(custom_credentials = SERVICE_ACCOUNT_JSON)
+  gc = pygsheets.authorize(credentials=SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
