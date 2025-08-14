@@ -1,9 +1,7 @@
 pandas
 requests
 pygsheets
-
 flask
 line-bot-sdk
 google-cloud-secret-manager
-
 gunicorn
