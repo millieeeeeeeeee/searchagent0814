@@ -3,5 +3,9 @@ requests
 pygsheets
 flask
 line-bot-sdk
-google-cloud-secret-manager
 gunicorn
+
+google-cloud-secret-manager
+google-auth
+google-api-python-client
+google-auth-oauthlib
