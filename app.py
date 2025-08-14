@@ -1183,7 +1183,7 @@ def callback():
         print("Webhook 處理錯誤：", e)
         abort(400)
 
-    return "OK",200
+    return "OK"
 
 # 🟦 處理文字訊息
 @handler.add(MessageEvent, message=TextMessageContent)
@@ -1216,3 +1216,4 @@ def handle_postback(event):
             messages=[reply]
         )
     )
+
