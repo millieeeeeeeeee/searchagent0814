@@ -21,6 +21,7 @@ from linebot.v3.messaging import MessagingApi, MessagingApiBlob, RichMenuRequest
 from linebot.v3.webhooks import MessageEvent, TextMessageContent, PostbackEvent
 
 from google.cloud import secretmanager
+from google.oauth2 import service_account
 
 """##設置今日為2024-09-01"""
 
@@ -35,6 +36,10 @@ def access_secret_version(project_id, secret_id, version_id="latest"):
 
 # 你 GCP 專案 ID
 PROJECT_ID = "gen-lang-client-0700041250"
+SERVICE_ACCOUNT_JSON_str = access_secret_version(PROJECT_ID, "SERVICE_ACCOUNT_JSON")
+SERVICE_ACCOUNT_JSON_dict = json.loads(SERVICE_ACCOUNT_JSON_str)
+# 直接建立憑證物件
+SERVICE_ACCOUNT_JSON = service_account.Credentials.from_service_account_info(SERVICE_ACCOUNT_JSON_dict)
 
 #上週
 def get_last_week_range(today):
@@ -57,7 +62,7 @@ def get_last_month_range(today):
 """#資料處理"""
 
 #Googlesheet Api
-gc = pygsheets.authorize(service_account_file='./gen-lang-client-0700041250-50b828903f03.json')
+gc = pygsheets.authorize(service_account_file=SERVICE_ACCOUNT_JSON)
 
 survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
 sh = gc.open_by_url(survey_url)
@@ -77,7 +82,7 @@ merged['日期'] = pd.to_datetime(merged['日期'], format='mixed')
 
 #合併三張表資料
 def merged_df():
-  gc = pygsheets.authorize(service_account_file='./gen-lang-client-0700041250-50b828903f03.json')
+  gc = pygsheets.authorize(service_account_file = SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
@@ -217,7 +222,7 @@ def chunk_stock(parsed_dict,df):
 
 def PhaseII_DataSelector(parsed_dict):
   required_tables = parsed_dict.get("required_tables", [])
-  gc = pygsheets.authorize(service_account_file='./gen-lang-client-0700041250-50b828903f03.json')
+  gc = pygsheets.authorize(service_account_file = SERVICE_ACCOUNT_JSON)
 
   survey_url = 'https://docs.google.com/spreadsheets/d/1QmpmeFcAqCEwW9lJUuEd40gD27SvlMoUSyzp7jvhG-E/edit?usp=sharing'
   sh = gc.open_by_url(survey_url)
